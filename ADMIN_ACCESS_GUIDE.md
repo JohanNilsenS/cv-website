@@ -22,8 +22,13 @@ Your portfolio website now includes a complete admin interface that allows you t
    # Make the script executable
    chmod +x create-admin-user.sh
    
-   # Run the script
+   # Run the script (this will fix JSON formatting issues)
    ./create-admin-user.sh https://johancv.com
+   
+   # Alternative: Direct curl command with proper JSON
+   curl -X POST https://johancv.com/api/auth/register \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Johan Stjernquist","email":"admin@johancv.com","password":"YourSecurePassword123!"}'
    ```
 
 3. **Login**: Use the credentials you created to access the dashboard
@@ -127,11 +132,20 @@ After running the setup script, you can use:
 1. **500 Error**: Check backend logs in Dokploy
 2. **401 Unauthorized**: Token may be expired, re-login
 3. **403 Forbidden**: Ensure user has admin role
+4. **JSON Parse Error**: Use proper JSON formatting in requests
+5. **404 on /api/health**: Both `/health` and `/api/health` endpoints are now available
 
 ### Database Issues
 1. Check Dokploy database service is running
 2. Verify environment variables are set correctly
 3. Ensure database migrations have run
+4. Test database connection: `curl https://johancv.com/api/health`
+
+### Registration Issues
+1. **JSON Format Error**: Ensure JSON is properly formatted without extra escaping
+2. **Missing Fields**: Provide name, email, and password (min 6 characters)
+3. **User Already Exists**: Try a different email address
+4. **Database Not Connected**: Check logs for database connection errors
 
 ## 🔄 Regular Maintenance
 

@@ -10,6 +10,7 @@ import { notFound } from './middleware/notFound';
 import contactRoutes from './routes/contactRoutes';
 import projectRoutes from './routes/projectRoutes';
 import authRoutes from './routes/authRoutes';
+import { databaseService } from './services/databaseService';
 
 // Load environment variables
 dotenv.config();
@@ -55,12 +56,24 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
-// Health check endpoint
-app.get('/health', (_req, res) => {
+// Health check endpoints
+app.get('/health', async (_req, res) => {
+  const dbHealthy = await databaseService.healthCheck();
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    database: dbHealthy ? 'connected' : 'disconnected'
+  });
+});
+
+app.get('/api/health', async (_req, res) => {
+  const dbHealthy = await databaseService.healthCheck();
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: dbHealthy ? 'connected' : 'disconnected'
   });
 });
 
@@ -73,11 +86,23 @@ app.use('/api/auth', authRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-});
+// Initialize database and start server
+const startServer = async () => {
+  try {
+    await databaseService.connect();
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+      console.log(`🔗 API Health check: http://localhost:${PORT}/api/health`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 export default app; 

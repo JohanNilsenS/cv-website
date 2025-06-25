@@ -113,8 +113,15 @@ export const register = async (
   res: Response<ApiResponse>
 ): Promise<void> => {
   try {
+    console.log('Register attempt:', { 
+      body: req.body, 
+      headers: req.headers,
+      contentType: req.get('Content-Type')
+    });
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       res.status(400).json({
         success: false,
         error: 'Validation failed',
@@ -124,6 +131,17 @@ export const register = async (
     }
 
     const { name, email, password } = req.body;
+    
+    // Validate required fields
+    if (!name || !email || !password) {
+      console.log('Missing required fields:', { name: !!name, email: !!email, password: !!password });
+      res.status(400).json({
+        success: false,
+        error: 'Missing required fields: name, email, and password are required',
+      });
+      return;
+    }
+
     const prisma = databaseService.getPrismaClient();
 
     // Check if user already exists
@@ -132,6 +150,7 @@ export const register = async (
     });
 
     if (existingUser) {
+      console.log('User already exists:', email);
       res.status(409).json({
         success: false,
         error: 'User already exists with this email',
@@ -160,6 +179,8 @@ export const register = async (
       },
     });
 
+    console.log('User created successfully:', user.id);
+
     // Generate token
     const token = generateToken(user.id, user.email, user.role);
 
@@ -172,10 +193,15 @@ export const register = async (
       },
     });
   } catch (error) {
-    console.error('Register error:', error);
+    console.error('Register error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      error
+    });
     res.status(500).json({
       success: false,
       error: 'Failed to register user',
+      details: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : 'Unknown error' : undefined
     });
   }
 };
