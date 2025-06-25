@@ -1,0 +1,88 @@
+{
+  "name": "cv-portfolio-fullstack",
+  "type": "compose",
+  "compose": {
+    "file": "docker-compose.yml",
+    "services": ["db", "backend", "frontend"]
+  },
+  "deploy": {
+    "domain": "johancv.com",
+    "ssl": true,
+    "healthcheck": {
+      "services": {
+        "frontend": {
+          "path": "/health",
+          "port": 80
+        },
+        "backend": {
+          "path": "/health",
+          "port": 3001
+        },
+        "db": {
+          "command": "pg_isready -U postgres -d portfolio"
+        }
+      },
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3
+    },
+    "restart": "unless-stopped"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "DATABASE_URL": "postgresql://postgres:${DB_PASSWORD}@db:5432/portfolio",
+    "JWT_SECRET": "${JWT_SECRET}",
+    "SMTP_USER": "${SMTP_USER}",
+    "SMTP_PASS": "${SMTP_PASS}",
+    "EMAIL_FROM": "${EMAIL_FROM}",
+    "EMAIL_TO": "${EMAIL_TO}",
+    "FRONTEND_URL": "https://johancv.com",
+    "PRODUCTION_URL": "https://johancv.com"
+  },
+  "secrets": [
+    "DB_PASSWORD",
+    "JWT_SECRET", 
+    "SMTP_USER",
+    "SMTP_PASS",
+    "EMAIL_FROM",
+    "EMAIL_TO"
+  ],
+  "volumes": [
+    {
+      "name": "postgres_data",
+      "mount": "/var/lib/postgresql/data",
+      "service": "db"
+    },
+    {
+      "name": "backend_uploads",
+      "mount": "/app/uploads",
+      "service": "backend"
+    }
+  ],
+  "networks": [
+    {
+      "name": "portfolio-network",
+      "driver": "bridge"
+    }
+  ],
+  "build": {
+    "services": {
+      "backend": {
+        "context": "./backend",
+        "dockerfile": "Dockerfile"
+      },
+      "frontend": {
+        "context": "./cv-app", 
+        "dockerfile": "Dockerfile",
+        "args": {
+          "VITE_API_URL": "https://johancv.com/api"
+        }
+      }
+    }
+  },
+  "hooks": {
+    "post-deploy": [
+      "docker-compose exec -T backend npx prisma migrate deploy"
+    ]
+  }
+} 
