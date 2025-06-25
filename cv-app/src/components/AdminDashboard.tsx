@@ -37,7 +37,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ token, user, onLogout }
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const apiUrl = import.meta.env.VITE_API_URL || 
+    (window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://johancv.com');
 
   const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     const response = await fetch(`${apiUrl}/api${endpoint}`, {

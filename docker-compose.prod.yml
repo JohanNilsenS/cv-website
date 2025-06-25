@@ -68,7 +68,7 @@ services:
       context: ./cv-app
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: https://johancv.com/api
+        VITE_API_URL: https://johancv.com
     container_name: portfolio-frontend
     environment:
       NODE_ENV: production

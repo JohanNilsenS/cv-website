@@ -1,6 +1,9 @@
 # Multi-stage build for React Vite TypeScript app
 FROM node:20 AS builder
 
+# Build argument for API URL
+ARG VITE_API_URL=https://johancv.com
+
 # Set working directory
 WORKDIR /app
 
@@ -12,6 +15,9 @@ RUN npm ci
 
 # Copy source code
 COPY . .
+
+# Set environment variable for build
+ENV VITE_API_URL=$VITE_API_URL
 
 # Build the application
 RUN npm run build
