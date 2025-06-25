@@ -2,7 +2,7 @@
   "name": "cv-portfolio-fullstack",
   "type": "compose",
   "compose": {
-    "file": "docker-compose.yml",
+    "file": "docker-compose.dokploy.yml",
     "services": ["db", "backend", "frontend"]
   },
   "deploy": {
@@ -82,7 +82,7 @@
   },
   "hooks": {
     "post-deploy": [
-      "docker-compose exec -T backend npx prisma migrate deploy"
+      "docker-compose -f docker-compose.dokploy.yml exec -T backend npx prisma migrate deploy"
     ]
   }
 } 
