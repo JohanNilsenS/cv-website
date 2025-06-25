@@ -45,25 +45,25 @@ const Contact: React.FC = () => {
     {
       icon: '📧',
       label: 'Email',
-      value: 'johan.stjernquist@example.com',
-      link: 'mailto:johan.stjernquist@example.com'
+      value: 'johanstjernquist1@gmail.com',
+      link: 'mailto:johanstjernquist1@gmail.com'
     },
     {
       icon: '💼',
       label: 'LinkedIn',
       value: 'Johan Nilsen Stjernquist',
-      link: 'https://linkedin.com/in/johan-stjernquist'
+      link: 'https://www.linkedin.com/in/johan-nilsen-stjernquist-692743208/'
     },
     {
       icon: '🐙',
       label: 'GitHub',
       value: '@johan-stjernquist',
-      link: 'https://github.com/johan-stjernquist'
+      link: 'https://github.com/JohanNilsenS/'
     },
     {
       icon: '📍',
       label: 'Location',
-      value: 'Available for Remote Work',
+      value: 'Available for Remote Work, and in Gothenburg, Sweden',
       link: null
     }
   ]

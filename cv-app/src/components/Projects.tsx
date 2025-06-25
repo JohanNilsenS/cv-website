@@ -23,70 +23,31 @@ const Projects: React.FC = () => {
       id: 1,
       title: 'CV Portfolio Website',
       description: 'Modern, responsive portfolio website built with React and TypeScript',
-      longDescription: 'A comprehensive portfolio website showcasing my skills, projects, and experience. Built with modern web technologies and deployed using Docker and Dokploy for seamless CI/CD.',
-      technologies: ['React', 'TypeScript', 'CSS3', 'Docker', 'Dokploy'],
+      longDescription: 'A comprehensive portfolio website showcasing my skills, projects, and experience. Built with modern web technologies and deployed using Docker and Dokploy for seamless CI/CD. Features responsive design, smooth animations, and optimized performance.',
+      technologies: ['React', 'TypeScript', 'CSS3', 'Docker', 'Dokploy', 'Nginx'],
       category: 'web',
-      status: 'in-progress',
-      github: '#',
-      demo: '#'
+      status: 'completed',
+      github: 'https://github.com/johan-stjernquist/cv-website',
+      demo: 'https://johancv.com'
     },
     {
       id: 2,
-      title: 'Image Classification Model',
-      description: 'Deep learning model for image recognition using convolutional neural networks',
-      longDescription: 'Developed a CNN-based image classification system using TensorFlow and Keras. The model achieves high accuracy on standard datasets and includes data augmentation techniques.',
-      technologies: ['Python', 'TensorFlow', 'Keras', 'OpenCV', 'NumPy'],
-      category: 'ai-ml',
-      status: 'completed',
-      github: '#'
-    },
-    {
-      id: 3,
-      title: 'Natural Language Processing Tool',
-      description: 'Text analysis and sentiment classification using transformer models',
-      longDescription: 'Built an NLP pipeline for text preprocessing, feature extraction, and sentiment analysis. Implemented using transformer models and achieved competitive performance on benchmark datasets.',
-      technologies: ['Python', 'PyTorch', 'Transformers', 'NLTK', 'Pandas'],
-      category: 'ai-ml',
-      status: 'completed',
-      github: '#'
-    },
-    {
-      id: 4,
-      title: 'Data Visualization Dashboard',
-      description: 'Interactive dashboard for exploring and analyzing complex datasets',
-      longDescription: 'Created an interactive web-based dashboard for data exploration and visualization. Features multiple chart types, filtering capabilities, and real-time data updates.',
-      technologies: ['Python', 'Streamlit', 'Plotly', 'Pandas', 'SQL'],
-      category: 'data',
-      status: 'completed',
-      github: '#'
-    },
-    {
-      id: 5,
-      title: 'Predictive Analytics System',
-      description: 'Machine learning system for forecasting and trend analysis',
-      longDescription: 'Developed a comprehensive predictive analytics system using various ML algorithms. Includes time series forecasting, anomaly detection, and automated model selection.',
-      technologies: ['Python', 'Scikit-learn', 'XGBoost', 'Prophet', 'Docker'],
-      category: 'ai-ml',
-      status: 'planned',
-      github: '#'
-    },
-    {
-      id: 6,
-      title: 'API Development Project',
-      description: 'RESTful API with authentication and real-time features',
-      longDescription: 'Built a scalable REST API with user authentication, real-time updates via WebSockets, and comprehensive documentation. Deployed on cloud infrastructure with monitoring.',
-      technologies: ['Node.js', 'Express', 'MongoDB', 'JWT', 'Socket.io'],
-      category: 'web',
-      status: 'planned',
+      title: 'Portfolio Backend API',
+      description: 'Full-stack backend system with database integration and email services',
+      longDescription: 'A comprehensive backend system that powers the portfolio website with features including contact form submissions stored in database, email notifications, and a REST API for dynamic project management. Built with Node.js, Express, and PostgreSQL with proper authentication and validation.',
+      technologies: ['Node.js', 'Express', 'PostgreSQL', 'Prisma', 'Nodemailer', 'JWT', 'Docker'],
+      category: 'backend',
+      status: 'in-progress',
       github: '#'
     }
   ]
 
   const categories = [
     { id: 'all', name: 'All Projects' },
+    { id: 'web', name: 'Web Development' },
+    { id: 'backend', name: 'Backend Development' },
     { id: 'ai-ml', name: 'AI & ML' },
-    { id: 'data', name: 'Data Science' },
-    { id: 'web', name: 'Web Development' }
+    { id: 'data', name: 'Data Science' }
   ]
 
   const filteredProjects = filter === 'all' 
@@ -129,7 +90,8 @@ const Projects: React.FC = () => {
                 <div className="project-placeholder">
                   <span className="project-icon">
                     {project.category === 'ai-ml' ? '🤖' : 
-                     project.category === 'data' ? '📊' : '🌐'}
+                     project.category === 'data' ? '📊' : 
+                     project.category === 'backend' ? '⚙️' : '🌐'}
                   </span>
                 </div>
                 <div className="project-status" style={{ backgroundColor: getStatusColor(project.status) }}>
