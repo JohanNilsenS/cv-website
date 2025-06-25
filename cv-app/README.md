@@ -1,69 +1,138 @@
-# React + TypeScript + Vite
+# CV App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite application with Docker support for easy deployment with Dokploy.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ⚡️ Vite for fast development and building
+- ⚛️ React 19 with TypeScript
+- 🐳 Docker support with multi-stage builds
+- 🏥 Health check endpoints
+- 📦 Optimized for production deployment
+- 🚀 Ready for Dokploy auto-deployment
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+ 
+- npm or yarn
+- Docker (for containerized deployment)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Local Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Docker Deployment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Building the Docker Image
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Build the image
+npm run docker:build
+# or manually
+docker build -t cv-app .
+
+# Run the container
+npm run docker:run
+# or manually  
+docker run -p 3000:80 cv-app
 ```
+
+### Using Docker Compose
+
+```bash
+# Start the application
+npm run docker:compose:up
+
+# Stop the application
+npm run docker:compose:down
+```
+
+The application will be available at `http://localhost:3000`
+
+### Health Check
+
+The application includes a health check endpoint at `/health` that returns `healthy` when the service is running properly.
+
+## Dokploy Deployment
+
+This project is pre-configured for Dokploy auto-deployment with the following files:
+
+- `Dockerfile` - Multi-stage Docker build configuration
+- `dokploy.json` - Dokploy deployment configuration
+- `docker-compose.yml` - Container orchestration setup
+
+### Dokploy Setup Steps
+
+1. **Connect Repository**: Link your Git repository to Dokploy
+2. **Auto-Detection**: Dokploy will automatically detect the `Dockerfile` and `dokploy.json`
+3. **Environment Variables**: Configure any needed environment variables in Dokploy dashboard
+4. **Domain Setup**: Configure your domain/subdomain in Dokploy
+5. **Deploy**: Dokploy will automatically build and deploy on git pushes
+
+### Dokploy Configuration
+
+The `dokploy.json` file contains:
+- Container configuration
+- Health check settings  
+- Port mapping (internal port 80)
+- Restart policies
+- Environment variables
+
+### Production Considerations
+
+- The application runs on nginx in production for optimal performance
+- Health checks are configured for container orchestration
+- The build is optimized with multi-stage Docker builds
+- Static assets are served efficiently by nginx
+
+## Project Structure
+
+```
+cv-app/
+├── src/                 # Source code
+├── public/             # Public assets
+├── dist/               # Built files (generated)
+├── Dockerfile          # Docker configuration
+├── docker-compose.yml  # Docker Compose setup
+├── dokploy.json        # Dokploy configuration  
+├── package.json        # Dependencies and scripts
+└── README.md          # This file
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint
+- `npm run docker:build` - Build Docker image
+- `npm run docker:run` - Run Docker container
+- `npm run docker:compose:up` - Start with Docker Compose
+- `npm run docker:compose:down` - Stop Docker Compose
+
+## Technologies Used
+
+- **React** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Docker** - Containerization
+- **Nginx** - Production web server
+- **ESLint** - Code linting
+
+## License
+
+MIT

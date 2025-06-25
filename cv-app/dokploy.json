@@ -1,0 +1,21 @@
+{
+  "name": "cv-app",
+  "type": "docker",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "deploy": {
+    "port": 80,
+    "healthcheck": {
+      "path": "/health",
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3
+    },
+    "restart": "unless-stopped"
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+} 
