@@ -55,12 +55,6 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend-new.rule=Host(`johancv.com`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.backend-new.tls=true"
-      - "traefik.http.routers.backend-new.tls.certresolver=letsencrypt"
-      - "traefik.http.services.backend-new.loadbalancer.server.port=3001"
 
   # Frontend Application
   frontend:
@@ -84,12 +78,6 @@ services:
       retries: 3
       start_period: 40s
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend-new.rule=Host(`johancv.com`)"
-      - "traefik.http.routers.frontend-new.tls=true"
-      - "traefik.http.routers.frontend-new.tls.certresolver=letsencrypt"
-      - "traefik.http.services.frontend-new.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:
