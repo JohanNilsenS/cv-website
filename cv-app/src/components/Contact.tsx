@@ -8,6 +8,13 @@ interface FormData {
   message: string
 }
 
+interface ApiResponse {
+  success: boolean
+  message?: string
+  error?: string
+  data?: any
+}
+
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -17,8 +24,9 @@ const Contact: React.FC = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [statusMessage, setStatusMessage] = useState('')
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -29,16 +37,39 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    setTimeout(() => {
+    setSubmitStatus('idle')
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${apiUrl}/api/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result: ApiResponse = await response.json()
+
+      if (result.success) {
+        setSubmitStatus('success')
+        setStatusMessage('Thank you for your message! I\'ll get back to you soon.')
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        })
+      } else {
+        throw new Error(result.error || 'Failed to send message')
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error)
+      setSubmitStatus('error')
+      setStatusMessage('Sorry, there was an error sending your message. Please try again.')
+    } finally {
       setIsSubmitting(false)
-      setSubmitStatus('success')
-      setFormData({ name: '', email: '', subject: '', message: '' })
-      
-      // Reset status after 3 seconds
-      setTimeout(() => setSubmitStatus('idle'), 3000)
-    }, 1000)
+    }
   }
 
   const contactInfo = [
@@ -116,6 +147,17 @@ const Contact: React.FC = () => {
           
           <div className="contact-form-container">
             <form className="contact-form" onSubmit={handleSubmit}>
+              {submitStatus === 'success' && (
+                <div className="status-message success">
+                  {statusMessage}
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="status-message error">
+                  {statusMessage}
+                </div>
+              )}
+              
               <div className="form-group">
                 <label htmlFor="name">Name *</label>
                 <input
@@ -123,9 +165,10 @@ const Contact: React.FC = () => {
                   id="name"
                   name="name"
                   value={formData.name}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   placeholder="Your full name"
+                  disabled={isSubmitting}
                 />
               </div>
               
@@ -136,9 +179,10 @@ const Contact: React.FC = () => {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   placeholder="your@email.com"
+                  disabled={isSubmitting}
                 />
               </div>
               
@@ -149,9 +193,10 @@ const Contact: React.FC = () => {
                   id="subject"
                   name="subject"
                   value={formData.subject}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   placeholder="What's this about?"
+                  disabled={isSubmitting}
                 />
               </div>
               
@@ -161,11 +206,12 @@ const Contact: React.FC = () => {
                   id="message"
                   name="message"
                   value={formData.message}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   placeholder="Tell me about your project or opportunity..."
                   rows={5}
-                />
+                  disabled={isSubmitting}
+                ></textarea>
               </div>
               
               <button 
@@ -175,18 +221,6 @@ const Contact: React.FC = () => {
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
-              
-              {submitStatus === 'success' && (
-                <div className="form-success">
-                  ✅ Message sent successfully! I'll get back to you soon.
-                </div>
-              )}
-              
-              {submitStatus === 'error' && (
-                <div className="form-error">
-                  ❌ Something went wrong. Please try again or contact me directly.
-                </div>
-              )}
             </form>
           </div>
         </div>
