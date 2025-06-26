@@ -8,13 +8,6 @@ interface FormData {
   message: string
 }
 
-interface ApiResponse {
-  success: boolean
-  message?: string
-  error?: string
-  data?: any
-}
-
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -22,9 +15,6 @@ const Contact: React.FC = () => {
     subject: '',
     message: ''
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [statusMessage, setStatusMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -34,42 +24,28 @@ const Contact: React.FC = () => {
     }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus('idle')
-
-    try {
-      const apiUrl = 'https://johancv.com'
-      const response = await fetch(`${apiUrl}/api/contacts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const result: ApiResponse = await response.json()
-
-      if (result.success) {
-        setSubmitStatus('success')
-        setStatusMessage('Thank you for your message! I\'ll get back to you soon.')
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
-        })
-      } else {
-        throw new Error(result.error || 'Failed to send message')
-      }
-    } catch (error) {
-      console.error('Error submitting contact form:', error)
-      setSubmitStatus('error')
-      setStatusMessage('Sorry, there was an error sending your message. Please try again.')
-    } finally {
-      setIsSubmitting(false)
-    }
+    
+    // Create mailto link with form data
+    const subject = encodeURIComponent(formData.subject || 'Contact from Portfolio Website')
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Subject: ${formData.subject}\n\n` +
+      `Message:\n${formData.message}`
+    )
+    
+    const mailtoLink = `mailto:johanstjernquist1@gmail.com?subject=${subject}&body=${body}`
+    window.location.href = mailtoLink
+    
+    // Reset form after submission
+    setFormData({
+      name: '',
+      email: '',
+      subject: '',
+      message: ''
+    })
   }
 
   const contactInfo = [
@@ -147,16 +123,9 @@ const Contact: React.FC = () => {
           
           <div className="contact-form-container">
             <form className="contact-form" onSubmit={handleSubmit}>
-              {submitStatus === 'success' && (
-                <div className="status-message success">
-                  {statusMessage}
-                </div>
-              )}
-              {submitStatus === 'error' && (
-                <div className="status-message error">
-                  {statusMessage}
-                </div>
-              )}
+              <div className="form-info">
+                <p>Fill out the form below and it will open your email client with the message pre-filled.</p>
+              </div>
               
               <div className="form-group">
                 <label htmlFor="name">Name *</label>
@@ -168,7 +137,6 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   placeholder="Your full name"
-                  disabled={isSubmitting}
                 />
               </div>
               
@@ -182,7 +150,6 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   placeholder="your@email.com"
-                  disabled={isSubmitting}
                 />
               </div>
               
@@ -196,7 +163,6 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   placeholder="What's this about?"
-                  disabled={isSubmitting}
                 />
               </div>
               
@@ -208,19 +174,23 @@ const Contact: React.FC = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  placeholder="Tell me about your project or opportunity..."
-                  rows={5}
-                  disabled={isSubmitting}
+                  placeholder="Tell me about your project, idea, or just say hello!"
+                  rows={6}
                 ></textarea>
               </div>
               
-              <button 
-                type="submit" 
-                className="btn btn-primary btn-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+              <button type="submit" className="btn btn-primary btn-full">
+                Send Message
               </button>
+              
+              <div className="form-note">
+                <p>
+                  Alternatively, you can reach me directly at{' '}
+                  <a href="mailto:johanstjernquist1@gmail.com">
+                    johanstjernquist1@gmail.com
+                  </a>
+                </p>
+              </div>
             </form>
           </div>
         </div>

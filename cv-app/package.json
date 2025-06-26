@@ -7,11 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "docker:build": "docker build -t cv-app .",
-    "docker:run": "docker run -p 3000:80 cv-app",
-    "docker:compose:up": "docker-compose up --build",
-    "docker:compose:down": "docker-compose down"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.0",
