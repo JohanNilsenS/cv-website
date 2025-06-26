@@ -71,6 +71,7 @@ services:
         condition: service_healthy
     networks:
       - portfolio-network
+      - dokploy-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
@@ -87,4 +88,6 @@ volumes:
 
 networks:
   portfolio-network:
-    driver: bridge 
+    driver: bridge
+  dokploy-network:
+    external: true 
