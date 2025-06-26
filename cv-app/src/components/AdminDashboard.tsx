@@ -61,10 +61,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ token, user, onLogout }
       setLoading(true);
       const result = await apiCall('/contacts');
       if (result.success) {
-        setContacts(result.data || []);
+        setContacts(result.data?.contacts || []);
+      } else {
+        console.log('Failed to fetch contacts:', result.message);
+        setContacts([]);
+        setError(result.message || 'Failed to load contacts');
       }
     } catch (error) {
       console.error('Error fetching contacts:', error);
+      setContacts([]); // Ensure contacts is always an array
       setError('Failed to load contacts');
     } finally {
       setLoading(false);
@@ -77,9 +82,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ token, user, onLogout }
       const result = await apiCall('/projects');
       if (result.success) {
         setProjects(result.data || []);
+      } else {
+        console.log('Failed to fetch projects:', result.message);
+        setProjects([]);
+        setError(result.message || 'Failed to load projects');
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setProjects([]); // Ensure projects is always an array
       setError('Failed to load projects');
     } finally {
       setLoading(false);

@@ -52,25 +52,32 @@ export const submitContact = async (
       }
     });
 
-    // Send email notification
+    // Send email notification (optional)
     try {
-      await emailService.sendContactNotification({
-        name,
-        email,
-        subject,
-        message
-      });
+      // Only attempt email if SMTP is configured
+      if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+        console.log('Attempting to send email notifications...');
+        await emailService.sendContactNotification({
+          name,
+          email,
+          subject,
+          message
+        });
 
-      // Send auto-reply
-      await emailService.sendAutoReply({
-        name,
-        email,
-        subject,
-        message
-      });
+        // Send auto-reply
+        await emailService.sendAutoReply({
+          name,
+          email,
+          subject,
+          message
+        });
+        console.log('Email notifications sent successfully');
+      } else {
+        console.log('SMTP not configured, skipping email notifications');
+      }
     } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-      // Continue even if email fails
+      console.error('Email sending failed (but continuing):', emailError);
+      // Continue even if email fails - contact still saved to database
     }
 
     res.status(201).json({
