@@ -61,12 +61,12 @@ const About: React.FC = () => {
           
           <div className="about-stats">
             <div className="stat-item">
-              <div className="stat-number">2024</div>
-              <div className="stat-label">Graduate Year</div>
+              <div className="stat-number">2025</div>
+              <div className="stat-label">Graduate Year from IT-Högskolan</div>
             </div>
             
             <div className="stat-item">
-              <div className="stat-number">AI/ML</div>
+              <div className="stat-number">AI/ML + Frontend</div>
               <div className="stat-label">Specialization</div>
             </div>
             
