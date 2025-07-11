@@ -61,6 +61,11 @@
   padding: 0.5rem 0;
   position: relative;
   transition: var(--transition);
+  outline: none; /* Remove focus border */
+}
+
+.nav-link:focus {
+  outline: none; /* Ensure focus outline is removed */
 }
 
 .nav-link:hover {
@@ -78,8 +83,13 @@
   transition: width 0.3s ease;
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
   width: 100%;
+}
+
+.nav-link.active {
+  color: var(--primary-color);
 }
 
 .mobile-menu-toggle {
@@ -158,6 +168,11 @@
 
   .nav-link:hover {
     background: var(--bg-secondary);
+  }
+
+  .nav-link.active {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
   }
 
   /* Hamburger Animation */
